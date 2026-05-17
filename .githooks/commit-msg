@@ -1,0 +1,34 @@
+#!/bin/sh
+
+commit_msg=$(cat "$1")
+first_line=$(echo "$commit_msg" | head -1)
+
+VALID_TYPES="feat|fix|bug|docs|chore|refactor|test|style|perf"
+
+if ! echo "$first_line" | grep -qE "^($VALID_TYPES): .+"; then
+  echo ""
+  echo "  Bad commit message: \"$first_line\""
+  echo ""
+  echo "  Format:  <type>: <summary>"
+  echo "  Types:   feat, fix, bug, docs, chore, refactor, test, style, perf"
+  echo "  Example: feat: add pending jobs counter to redis cache"
+  echo ""
+  exit 1
+fi
+
+summary=$(echo "$first_line" | sed 's/^[^:]*: //')
+length=$(echo -n "$summary" | wc -c | tr -d ' ')
+
+if [ "$length" -lt 8 ]; then
+  echo ""
+  echo "  Commit summary too short ($length chars). Write at least 8 characters."
+  echo ""
+  exit 1
+fi
+
+if [ "$length" -gt 100 ]; then
+  echo ""
+  echo "  Commit summary too long ($length chars). Keep it under 100 characters."
+  echo ""
+  exit 1
+fi
