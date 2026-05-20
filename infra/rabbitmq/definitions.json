@@ -1,0 +1,19 @@
+{
+  "vhosts": [{ "name": "/" }],
+  "queues": [
+    {
+      "name": "fairq-inbound",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "fairq-notify",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ]
+}
