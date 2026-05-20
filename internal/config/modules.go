@@ -21,10 +21,35 @@ type ModuleConfig struct {
 type ModuleConfigs map[string]ModuleConfig
 
 func BuildModuleConfigs(c Config) ModuleConfigs {
-	return ModuleConfigs{
+	all := map[string]ModuleConfig{
 		"ingest": {QueueURL: c.IngestQueueURL, QueueType: QueueTypeSQS},
 		"notify": {QueueURL: c.NotifyQueueURL, QueueType: QueueTypeRMQ},
 	}
+	mc := make(ModuleConfigs)
+	for name, cfg := range all {
+		if cfg.QueueURL != "" {
+			mc[name] = cfg
+		}
+	}
+	return mc
+}
+
+func (mc ModuleConfigs) HasSQS() bool {
+	for _, cfg := range mc {
+		if cfg.QueueType == QueueTypeSQS {
+			return true
+		}
+	}
+	return false
+}
+
+func (mc ModuleConfigs) HasRMQ() bool {
+	for _, cfg := range mc {
+		if cfg.QueueType == QueueTypeRMQ {
+			return true
+		}
+	}
+	return false
 }
 
 func ValidateModuleConfigs(mc ModuleConfigs) error {
